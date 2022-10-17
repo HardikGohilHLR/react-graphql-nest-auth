@@ -1,5 +1,5 @@
 // Resolver - Users
-import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Mutation, Query, Args } from '@nestjs/graphql';
 
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
@@ -20,4 +20,8 @@ export class UsersResolver {
 		return this.usersService.signup(signupInput);
 	}
 
+	@Query(() => String)
+	sayHello(): string {
+	  	return 'Hello World!';
+	}
 }
