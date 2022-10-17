@@ -1,10 +1,13 @@
 // App
 import React from 'react';
+import RGNApp from './rgn-app';
 
 const App = () => {
     return (
 		<React.Fragment>
-			App
+			
+			<RGNApp />
+			
 		</React.Fragment>
     )
 }
