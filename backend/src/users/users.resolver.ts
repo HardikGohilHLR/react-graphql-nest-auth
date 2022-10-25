@@ -1,10 +1,11 @@
 // Resolver - Users
-import { Resolver, Mutation, Query, Args } from '@nestjs/graphql';
+import { Resolver, Mutation, Query, Args, Context } from '@nestjs/graphql';
 
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { LoginUserInput } from './dto/login-user.input';
+import { Request } from 'express';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -18,6 +19,14 @@ export class UsersResolver {
 	@Mutation(() => User)
 	signup(@Args('signup') signupInput: CreateUserInput): Promise<User> {
 		return this.usersService.signup(signupInput);
+	}
+
+	@Query(() => User)
+	getUser(@Context('req') req: Request): Promise<User> {
+
+		const token = req.headers.authorization?.split('Bearer ')[1];
+
+		return this.usersService.getUser(token);
 	}
 
 	@Query(() => String)

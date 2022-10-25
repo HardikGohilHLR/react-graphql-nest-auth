@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { CreateUserInput } from './dto/create-user.input';
 import { LoginUserInput } from './dto/login-user.input';
+import { PayloadType } from './interface/users.interface';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -68,4 +69,13 @@ export class UsersService {
 		const user = await this.usersRepository.findOneBy(args);
 		return user;
 	}
+
+    async getUser(token): Promise<User> {
+        const decodedJwt = this.jwtService.decode(token) as PayloadType;
+        if(decodedJwt) {
+            const user = await this.usersRepository.findOneBy({email: decodedJwt?.email});        
+            delete user.password;
+            return user;
+        }        
+    }
 }

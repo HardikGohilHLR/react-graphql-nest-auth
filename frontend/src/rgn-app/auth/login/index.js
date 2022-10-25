@@ -1,5 +1,5 @@
 // Login
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useFormik } from 'formik';
@@ -8,16 +8,27 @@ import { Alert, Button, Container, Col, Form, Row } from 'react-bootstrap';
 import { useMutation } from '@apollo/client';
 
 import { LOGIN_MUTATION } from '../graphql';
+import { useAuthUpdateContext } from '../../context/authContext';
 
 const Login = () => {
 
     const navigate = useNavigate();
+    const dispatch = useAuthUpdateContext();
 
     const [isError, setIsError] = useState(null);
+
+    useEffect(() => {        
+        const isAuthenticated = localStorage.getItem('rgn_token');
+
+        if(isAuthenticated) {
+            navigate('/');
+        }
+    }, []);
     
     const [login] = useMutation(LOGIN_MUTATION, {
         onCompleted: ({ login }) => {
-            localStorage.setItem('token', login.token);
+            localStorage.setItem('rgn_token', login.token);
+            dispatch({type: 'LOGIN', payload: login});
             navigate('/');
         },
         onError: (error) => {
