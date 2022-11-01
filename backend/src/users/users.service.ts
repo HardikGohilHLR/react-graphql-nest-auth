@@ -1,5 +1,5 @@
 // Service - Users
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -20,6 +20,7 @@ export class UsersService {
         private jwtService: JwtService
 	) {}
 
+    // Login
 	async login(loginInput: LoginUserInput): Promise<User> {
 
         const { email, password } = loginInput;
@@ -44,6 +45,7 @@ export class UsersService {
         return { ...user, token };
 	}
 	
+    // Singup
 	async signup(signupInput: CreateUserInput): Promise<User> {
 
         const { email, password } = signupInput;
@@ -70,12 +72,17 @@ export class UsersService {
 		return user;
 	}
 
+    // Get User
     async getUser(token): Promise<User> {
         const decodedJwt = this.jwtService.decode(token) as PayloadType;
-        if(decodedJwt) {
-            const user = await this.usersRepository.findOneBy({email: decodedJwt?.email});        
-            delete user.password;
-            return user;
-        }        
+        
+        if(!decodedJwt) {
+            throw new UnauthorizedException();
+        }
+
+        const user = await this.usersRepository.findOneBy({email: decodedJwt?.email});        
+        delete user.password;
+        return user;
+
     }
 }

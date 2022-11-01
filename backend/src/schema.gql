@@ -20,7 +20,6 @@ scalar DateTime
 
 type Query {
   getUser: User!
-  sayHello: String!
 }
 
 type Mutation {
