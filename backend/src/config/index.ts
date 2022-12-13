@@ -7,11 +7,11 @@ export const typeOrmConfig: TypeOrmModuleAsyncOptions = {
     useFactory: () => {
         return {
             type: 'mongodb',
-            host: process.env.DB_HOST,
-            port: parseInt(process.env.DB_PORT),
-            database: 'rgnauth',
+            url: process.env.MONGO_URL,
+            database: process.env.MONGO_DB,
             autoLoadEntities: true,
             useNewUrlParser: true,
+            useUnifiedTopology: true,
             logging: true,
             synchronize: true,
         }
